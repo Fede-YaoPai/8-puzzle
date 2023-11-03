@@ -1,0 +1,74 @@
+@import './partials/variables';
+
+html, body {
+  padding: 0;
+  margin: 0;
+
+  font-family: sans-serif;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .application-wrapper {
+    height: 100vh;
+
+    .game-container {
+      border: 1px solid black;
+      min-width: 250;
+      max-width: 400px;
+      aspect-ratio: 1/1;
+      flex-wrap: wrap;
+
+      &.victory {
+        position: relative;
+
+        ::before {
+          content: "VICTORY !!!";
+          position: absolute;
+          top: -5%;
+          left: -5%;
+          height: 110%;
+          width: 110%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: black;
+          color: white;
+          font-size: 3rem;
+        }
+      }
+      
+      .square-wrapper {
+        aspect-ratio: 1/1;
+
+        .square {
+          user-select: none;
+          border: 1px solid black;
+          width: 100%;
+          height: 100%;
+
+          &:not(.empty) {
+            background-color: gainsboro;
+          }
+          
+          &.empty {
+            pointer-events: none;
+            background-color: white;
+          }
+
+          &:hover {
+            background-color: white;
+            transition: all 0.3s;
+          }
+
+          &:active {
+            background-color: lightgray;
+          }
+        }
+      }
+      
+    }
+  }
+}
+
