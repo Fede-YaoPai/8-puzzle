@@ -2,8 +2,9 @@ import { TOTAL_SQUARES_COUNT } from "../constants/constants";
 import { Square } from "./square";
 import { Utils } from "./utils";
 
-export class Game {
 
+export class Game {
+  
   public gamesPlayed: number = 0;
 
   private squares: Array<Square> = [];
@@ -14,12 +15,8 @@ export class Game {
     this.initSquaresLayout();
   }
 
-  public end(): void {
-
-  }
-
-  public reset(): void {
-
+  private end(gameContainer: HTMLDivElement): void {
+    gameContainer.classList.add('victory');
   }
 
   private initSquaresLayout(): void {
@@ -28,11 +25,7 @@ export class Game {
     if (gameContainer) {
       const squares: Array<Square> = this.createSquares();
 
-      if (squares.length) {
-        squares.forEach((square: Square) => {
-          this.createSquareElementAndPlaceInContainer(square, gameContainer);
-        });
-      }
+      this.renderSquares(squares, gameContainer);
     }
   }
 
@@ -69,8 +62,9 @@ export class Game {
     return squares;
   }
 
-  private createSquareElementAndPlaceInContainer(square: Square, container: HTMLDivElement): void {
-    const squareWrapperElement: HTMLDivElement = document.createElement('div');
+  private renderSquares(squares: Array<Square>, container: HTMLDivElement): void {
+    squares.forEach((square: Square) => {
+      const squareWrapperElement: HTMLDivElement = document.createElement('div');
 
     squareWrapperElement.classList.add('square-wrapper', 'p-1', 'col-4', `number-${square.number}`, `position-${square.position}`);
 
@@ -111,6 +105,7 @@ export class Game {
     
     squareWrapperElement.append(squareElement);
     container.append(squareWrapperElement);
+    });
   }
 
   private moveSquares(square: Square, emptySquare: Square): void {
@@ -119,23 +114,8 @@ export class Game {
       emptySquare.position
     ];
 
-    this.squares = this.squares.map((s: Square) => {
-      const mappedSquare: Square = new Square(s.number, s.isEmpty, s.position);
-
-      if (!s.isEmpty && s.position === squarePosition) {
-        mappedSquare.position = emptySquarePosition;
-
-        return mappedSquare;
-      }
-
-      if (s.isEmpty && s.position === emptySquarePosition) {
-        mappedSquare.position = squarePosition;
-
-        return mappedSquare;
-      }
-
-      return s;
-    });
+    square.moveTo(emptySquarePosition);
+    emptySquare.moveTo(squarePosition);
 
     this.squares.sort((a, b) => a.position - b.position);
 
@@ -151,9 +131,7 @@ export class Game {
         gameContainer.removeChild(gameContainer.firstChild);
       }
 
-      squares.forEach((square: Square) => {
-        this.createSquareElementAndPlaceInContainer(square, gameContainer);
-      });
+      this.renderSquares(squares, gameContainer);
     }
   }
 
@@ -164,7 +142,7 @@ export class Game {
       const gameContainer: HTMLDivElement | null = Utils.getGameContainer();
 
       if (gameContainer) {
-        gameContainer.classList.add('victory');
+        this.end(gameContainer);
       }
     }
   }
